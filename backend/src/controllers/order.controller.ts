@@ -1,7 +1,8 @@
-import Joi from 'joi';
 import mongoose from 'mongoose';
 import { faker } from '@faker-js/faker';
 import { NextFunction, Request, Response } from 'express';
+import { celebrate, Joi, Segments } from 'celebrate';
+
 import Product from '../models/product.model';
 import BadRequestError from '../errors/bad-request-error';
 
@@ -24,6 +25,10 @@ export const orderSchema = Joi.object<IOrder>({
   total: Joi.number(),
   items: Joi.array(),
 });
+
+export const orderRouteValidator = celebrate({
+  [Segments.BODY]: orderSchema
+})
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { error, value } = orderSchema.validate(req.body as IOrder);
