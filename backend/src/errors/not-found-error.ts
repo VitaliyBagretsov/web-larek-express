@@ -3,8 +3,8 @@ import { Error } from 'mongoose';
 class NotFoundError extends Error {
   public statusCode: number;
 
-  constructor(message: string) {
-    super(message);
+  constructor() {
+    super('Page not found');
     this.statusCode = 404;
   }
 }
