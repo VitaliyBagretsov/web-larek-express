@@ -1,13 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import { celebrate, Joi, Segments } from "celebrate";
-import Product, { IProduct } from "../models/product.model";
-import ConflictError from "../errors/conflict-error";
-import BadRequestError from "../errors/bad-request-error";
+import { NextFunction, Request, Response } from 'express';
+import { celebrate, Joi, Segments } from 'celebrate';
+import Product, { IProduct } from '../models/product.model';
+import ConflictError from '../errors/conflict-error';
+import BadRequestError from '../errors/bad-request-error';
 
-export const getProducts = (_req: Request, res: Response, next: NextFunction) =>
-  Product.find({})
-    .then((products) => res.send({ items: products, total: products.length }))
-    .catch((error) => next(error.message));
+export const getProducts = (_req: Request, res: Response, next: NextFunction) => Product.find({})
+  .then((products) => res.send({ items: products, total: products.length }))
+  .catch((error) => next(error.message));
 
 export const productSchema = Joi.object<IProduct>({
   title: Joi.string().min(3).max(30).required(),
@@ -24,9 +23,11 @@ export const productRouteValidator = celebrate({
 export const createProduct = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  const { title, image, category, description, price } = req.body;
+  const {
+    title, image, category, description, price,
+  } = req.body;
   return Product.create({
     title,
     image,
@@ -36,11 +37,11 @@ export const createProduct = (
   })
     .then((product) => res.send({ data: product }))
     .catch((error) => {
-      if (error instanceof Error && error.message.includes("E11000")) {
+      if (error instanceof Error && error.message.includes('E11000')) {
         return next(new ConflictError(error.message));
       }
 
-      if (error.name === "ValidationError") {
+      if (error.name === 'ValidationError') {
         return next(new BadRequestError(`Validation error: ${error.message}`));
       }
 
